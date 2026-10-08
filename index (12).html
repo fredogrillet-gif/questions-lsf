@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LSF — Poser des questions</title>
+<style>
+:root{--ink:#1f3248;--blue:#306fa6;--stage:#2c4fd0;--bg:#eaf1f8;--line:#c9d8e8;--sun:#ffc94d;--ok:#2e9d6a;--r:14px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 Verdana,"Trebuchet MS",sans-serif}
+header{background:var(--ink);color:#fff;padding:12px 20px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+header h1{font-size:1.1rem;margin:0;flex:1}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.hb{background:none;border:1px solid #8aa3bd;border-radius:99px;padding:5px 12px;font-size:.8rem;color:#fff}
+.hb[aria-pressed=true]{background:var(--sun);color:var(--ink);border-color:var(--sun)}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 20px;background:#fff;border-bottom:1px solid var(--line)}
+nav button{flex:none;border:2px solid var(--line);background:#fff;border-radius:99px;padding:5px 12px;font-size:.82rem}
+nav button.on{background:var(--blue);border-color:var(--blue);color:#fff}
+main{max-width:980px;margin:20px auto;padding:0 16px 40px}
+.view{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:24px}
+h2{font-size:1.8rem;margin:0 0 4px;line-height:1.2}
+h3{margin:26px 0 8px;font-size:1.2rem}
+.sub{color:var(--blue);font-weight:bold;margin:0 0 14px}
+.ens{display:none}body.t .ens{display:block}
+.note{background:#eef5fc;border-radius:10px;padding:10px 14px;margin:14px 0}
+.note.warn{background:#fff4d6}.note.ens{background:#e6f6ee}
+ul{padding-left:22px}li{margin:4px 0}
+.vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin:14px 0}
+figure{margin:0;background:var(--stage);border-radius:var(--r);padding:8px;color:#fff}
+video{width:100%;border-radius:8px;display:block;background:#000;aspect-ratio:16/9}
+figcaption{display:flex;justify-content:space-between;align-items:center;padding:6px 4px 0;font-size:.9rem}
+.sm{background:#fff;border:0;border-radius:99px;padding:3px 10px;font-size:.8rem;color:var(--ink)}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:10px 18px;font-weight:bold}
+.btn.alt{background:var(--sun);color:var(--ink)}
+.hyp{margin:14px 0}.hyp label{display:block;font-weight:bold;margin-bottom:6px}
+.row{display:flex;gap:8px}.row input{flex:1;font:inherit;padding:8px 10px;border:2px solid var(--line);border-radius:10px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:#e3eefa;border-radius:99px;padding:3px 6px 3px 12px}
+.chip button{border:0;background:none;font-weight:bold;padding:0 6px}
+.revc{display:none;margin-top:12px}.rev.on .revc{display:block}
+.sign{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:baseline;border-left:6px solid var(--ok);background:#f1faf5;padding:8px 14px;margin:8px 0;border-radius:0 10px 10px 0}
+.sign b{font-size:1.15rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;margin:14px 0}
+.card{border:2px solid var(--line);border-radius:var(--r);overflow:hidden}
+.ch{width:100%;text-align:left;background:#f4f8fc;border:0;padding:14px;font-weight:bold;font-size:1.05rem}
+.cc{display:none;padding:10px}.card.open .cc{display:block}.card.open .ch{background:var(--sun)}
+.cc span{display:block;margin-bottom:8px}.cc .vids{grid-template-columns:1fr;margin:0}
+.tim{text-align:center;background:var(--ink);color:#fff;border-radius:var(--r);padding:16px;margin:16px 0}
+.tim b{display:block;font-size:3rem;font-variant-numeric:tabular-nums}
+.tim.end b{color:var(--sun)}.tim.end{animation:bl .6s 3}
+@keyframes bl{50%{background:#a33}}
+.tim .btn{margin:4px}
+.chk label{display:flex;gap:12px;align-items:center;padding:8px 4px;font-size:1.05rem}
+.chk input{width:24px;height:24px;accent-color:var(--ok)}
+.bravo{display:none;background:var(--ok);color:#fff;border-radius:var(--r);padding:16px;text-align:center;font-size:1.3rem;margin-top:12px}
+.bravo.on{display:block}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:12px 0}
+.tile{border:2px solid var(--line);background:#fff;border-radius:var(--r);padding:14px 8px;font-size:1rem;text-align:center}
+.tile span{display:block;font-size:2rem}
+.tile.bad{animation:sh .3s}.tile.ok{background:#d6f3e4;border-color:var(--ok)}.tile:disabled{opacity:.35}
+@keyframes sh{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.seq{display:flex;gap:8px;flex-wrap:wrap;min-height:60px;background:#f1faf5;border-radius:var(--r);padding:8px;align-items:center}
+.seq i{background:var(--ok);color:#fff;border-radius:10px;padding:6px 12px;font-style:normal;font-weight:bold}
+.pc{background:var(--stage);color:#fff;border-radius:var(--r);padding:28px;text-align:center;font-size:1.3rem;margin:12px 0;cursor:pointer;min-height:130px}
+.pc.op{background:var(--sun);color:var(--ink)}.pc b{display:block;font-size:2.2rem}
+.roles{font-size:1.4rem;text-align:center;background:#eef5fc;border-radius:var(--r);padding:16px;margin:14px 0}
+.plan{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.plan button{text-align:left;border:2px solid var(--line);background:#fff;border-radius:12px;padding:10px 14px}
+.plan small{display:block;color:var(--blue)}
+.foot{display:flex;justify-content:space-between;margin-top:20px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important}}
+</style></head><body>
+<header><h1>LSF — Poser des questions</h1>
+<button class="hb" id="bt" aria-pressed="false">Mode enseignant</button>
+<button class="hb" id="br">↺ Remise à zéro</button></header>
+<nav id="nav" aria-label="Étapes"></nav>
+<main><div class="view" id="v"></div><div class="foot"><button class="btn" id="pv">← Précédent</button><button class="btn" id="nx">Suivant →</button></div></main>
+<script>onerror=function(m,s,l){var d=document.createElement('div');d.style.cssText='background:#a33;color:#fff;padding:10px;font:14px monospace';d.textContent='Erreur : '+m+' (ligne '+l+')';document.body.insertBefore(d,document.body.firstChild)}</script>
+<script>var VU={};</script>
+<script>
+const E=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={hyp:{},chk:{}};try{Object.assign(S,JSON.parse(localStorage.getItem('lsf2')||'{}'))}catch(e){}
+const sv=()=>{try{localStorage.setItem('lsf2',JSON.stringify(S))}catch(e){}};
+const K=['age','habiter','aimer','detester','couleur','fille_garcon','combien_f','combien_s'];
+const Q=[['age','Quel âge as-tu ?'],['habiter','Où habites-tu ?'],['aimer','Qu’est-ce que tu aimes ?'],['detester','Qu’est-ce que tu détestes ?'],['couleur','Quelle est ta couleur préférée ?'],['fille_garcon','Es-tu une fille ou un garçon ?'],['combien_f','Combien as-tu de frères ?'],['combien_s','Combien as-tu de sœurs ?']];
+const CH=Q,L=Object.fromEntries(Q);
+const vid=(n,l)=>`<figure><video controls playsinline preload="metadata" src="${VU[n]}"></video><figcaption>${l?L[n]:'Vidéo '+(K.indexOf(n)+1)}<button class="sm" data-a="rp">↺ Rejouer</button></figcaption></figure>`;
+const vs=(a,l)=>`<div class="vids">${a.map(n=>vid(n,l)).join('')}</div>`;
+const NAMES=['Accueil','Défi 1','Équipes','Structure','Quelle question ?','Tire une question','Interview','Trouve…','Bilan','Vidéos'];
+const hyp=(id,q)=>({t:'hyp',id,q}),rev=(id,items,tips,x)=>({t:'rev',id,items,tips,x});
+const tm=(t,ks)=>[{t:'h',x:t},{t:'vid',n:ks},hyp('hq'+ks[0],'Pour chaque vidéo : que semble demander la personne ? Quels indices vous aident ?'),rev('rv'+ks[0],ks.map(k=>[L[k],'']),['Rejouer les vidéos.','Faire signer la question puis y répondre en LSF.'],'Vérification')];
+const WARN='🤫 <b>Défi :</b> aucun mot en français !';
+const ST=[
+{h:'LSF — Poser des questions',s:'Séance découverte • novices en LSF • 1 heure',b:[
+ {t:'note',x:'<b>Mission du jour :</b> apprendre à poser des questions en LSF pour faire connaissance avec un camarade.'},
+ {t:'note',k:'warn',x:'On observe d’abord, on propose des hypothèses, puis on vérifie. Pas besoin de tout comprendre tout de suite !'},
+ {t:'ens',x:'<b>Les 8 questions visées :</b> '+Q.map(q=>q[1]).join(' · ')},{t:'plan'}]},
+{h:'Défi 1 — Regarde… sans traduction',s:'Étape 1 • 8 min • Aucune explication : on observe d’abord.',b:[
+ {t:'ul',x:['👀 Regarde les mains.','🙂 Observe le visage et le regard.','🔎 Quels signes te semblent importants ?']},{t:'vid',n:['age']},
+ {t:'h',x:'Après la vidéo : quelles sont vos hypothèses ?'},
+ hyp('h1a','Que semble faire la personne ? Question, réponse, information ?'),hyp('h1b','Que veut dire cette phrase, selon vous ? Quels indices vous aident ?'),
+ {t:'ens',x:'Noter les propositions au tableau, rejouer 2-3 fois, puis faire repérer le début de la phrase et le visage.'},
+ rev('r1',[[L.age,'']],['Faire reproduire la question à tous.','Faire répondre en LSF avec son âge.'],'Vérification')]},
+{h:'Défi 2 — Équipes de détectives',s:'Étape 2 • 12 min • Trois équipes, chacune cherche le sens de ses vidéos.',b:[
+ ...tm('Équipe 1 — vidéos 2, 3, 4',['habiter','aimer','detester']),...tm('Équipe 2 — vidéos 5, 6',['couleur','fille_garcon']),...tm('Équipe 3 — vidéos 7, 8',['combien_f','combien_s']),
+ {t:'ens',x:'Mise en commun : chaque équipe propose, signe, puis on vérifie. Vérifier que combien_f = frères et combien_s = sœurs.'}]},
+{h:'Qu’est-ce qui revient ?',s:'Étape 3 • 7 min • On met en ordre ce qu’on a découvert. Touche une carte pour la retourner.',b:[
+ hyp('hs1','Qu’est-ce qui est pareil dans plusieurs questions (visage, regard, début ou fin de phrase) ?'),
+ hyp('hs2','Comparez les deux vidéos « combien » : qu’est-ce qui change ? Qu’est-ce qui reste identique ?'),
+ {t:'h',x:'Fiche mémo : les 8 questions'},{t:'cards',c:Q.map(q=>[q[1],'',[q[0]]])},
+ {t:'note',x:'<b>À retenir :</b> en LSF, le visage et le regard font partie de la question.'},
+ {t:'ens',x:'À valider avec une ressource LSF fiable ou un intervenant sourd : structure exacte des phrases et place du signe-clé.'}]},
+{h:'Jeu 1 — Quelle est la question ?',s:'Étape 4 • 6 min • Regarde la vidéo, puis choisis la bonne question.',b:[{t:'qz'}]},
+{h:'Jeu 2 — Tire une question',s:'Étape 5 • 6 min • Un élève tire une carte : le groupe comprend la question, la signe, puis un camarade répond en LSF.',b:[{t:'draw'},{t:'tim',id:'t5',s:360}]},
+{h:'Jeu 3 — Interview par deux',s:'Étape 6 • 8 min • Pose les 8 questions à ton camarade, puis inversez les rôles.',b:[{t:'roles'},{t:'chk',id:'c6',i:Q.map(q=>q[1]),r:1},{t:'note',k:'warn',x:WARN},{t:'tim',id:'t6',s:480}]},
+{h:'Jeu 4 — Trouve quelqu’un qui…',s:'Étape 7 • 6 min • Pour trouver la bonne personne, pose les questions en LSF.',b:[
+ {t:'chk',id:'c7',r:1,i:['🔎 a le même âge que toi','🔎 habite au même endroit que toi','🔎 aime la même chose que toi','🔎 déteste la même chose que toi','🔎 a la même couleur préférée','🔎 a le même nombre de frères','🔎 a le même nombre de sœurs']},{t:'note',k:'warn',x:WARN},{t:'tim',id:'t7',s:360}]},
+{h:'Je sais…',s:'Bilan • 3 min • Chaque élève fait le point.',b:[{t:'chk',id:'c8',b:1,i:Q.map(q=>'je sais demander : '+q[1]).concat(['je sais répondre à ces questions en LSF'])}]},
+{h:'Ressources vidéo',s:'Les 8 vidéos de la séance, à revoir à tout moment.',b:[{t:'vid',n:K,l:1}]}];
+const R={
+h:b=>`<h3>${b.x}</h3>`,p:b=>`<p>${b.x}</p>`,ul:b=>`<ul>${b.x.map(i=>`<li>${i}</li>`).join('')}</ul>`,
+note:b=>`<div class="note ${b.k||''}">${b.x}</div>`,ens:b=>`<div class="note ens">${b.x}</div>`,vid:b=>vs(b.n,b.l),
+hyp:b=>`<div class="hyp" data-id="${b.id}"><label>${b.q}</label><div class="row"><input placeholder="Hypothèse d’élève…" aria-label="Hypothèse"><button class="btn" data-a="ha">Noter</button></div><div class="chips">${chips(b.id)}</div></div>`,
+rev:b=>`<div class="rev"><button class="btn alt" data-a="rv">🔍 ${b.x?b.x+' — ':''}Vérifier les hypothèses</button><div class="revc">${b.items.map(i=>`<div class="sign"><b>${i[0]}</b><span>${i[1]}</span></div>`).join('')}<ul class="ens">${b.tips.map(i=>`<li>${i}</li>`).join('')}</ul></div></div>`,
+cards:b=>`<div class="cards">${b.c.map(c=>`<div class="card"><button class="ch" data-a="cd">${c[0]}</button><div class="cc">${c[1]?`<span>${c[1]}</span>`:''}${vs(c[2])}</div></div>`).join('')}</div>`,
+tim:b=>`<div class="tim" data-id="${b.id}" data-s="${b.s}"><b>${fm(b.s)}</b><button class="btn alt" data-a="tg">▶ Démarrer</button><button class="btn" data-a="rs">↺</button></div>`,
+chk:b=>`<div class="chk">${b.i.map((x,k)=>`<label><input type="checkbox" data-k="${b.id}.${k}" ${S.chk[b.id+'.'+k]?'checked':''}> ${x}</label>`).join('')}</div>${b.b?`<div class="bravo ${all(b)?'on':''}" id="bv">🎉 Bravo ! Vous avez mené votre première conversation en LSF.</div>`:''}${b.r?`<button class="sm" style="background:#e3eefa" data-a="cr" data-id="${b.id}">Tout décocher</button>`:''}`,
+ord:()=>{O={m:[0,1,2,3,4].sort(()=>Math.random()-.5),q:[]};return`<div class="seq" id="sq"></div><div class="tiles" id="tl"></div>`},
+qz:()=>`<div id="qz"></div>`,
+draw:()=>`<button class="btn" data-a="dr">🎴 Tirer une carte</button><div id="dc"></div>`,
+roles:()=>`<div class="roles" id="ro"></div><button class="btn" data-a="sw">↔ Inverser les rôles</button>`,
+plan:()=>`<h3>Le parcours</h3><div class="plan">${ST.map((s,i)=>i?`<button data-go="${i}">${NAMES[i]}<small>${(s.s.match(/(\d+) min/)||[])[0]||'Découverte'}</small></button>`:'').join('')}</div>`};
+let O,cur=0,T={},D={},rl=0;
+const fm=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+const chips=id=>(S.hyp[id]||[]).map((t,i)=>`<span class="chip">${E(t)}<button data-a="hd" data-i="${i}" aria-label="Supprimer">×</button></span>`).join('');
+const all=b=>b.i.every((_,k)=>S.chk[b.id+'.'+k]);
+const $=s=>document.querySelector(s);
+function ordUp(){$('#sq').innerHTML=O.q.length?O.q.map(i=>`<i>${OT[i][0]} ${OT[i][1]}</i>`).join(''):'<span>Touche les signes dans l’ordre de la présentation…</span>'+'';
+ $('#tl').innerHTML=O.m.map(i=>`<button class="tile" data-a="ot" data-i="${i}" ${O.q.includes(i)?'disabled':''}><span>${OT[i][0]}</span>${OT[i][1]}</button>`).join('');
+ if(O.q.length==5)$('#sq').insertAdjacentHTML('afterend','<div class="bravo on">🎉 Présentation complète : bravo !</div>')}
+function roUp(){$('#ro').innerHTML=rl?'<b>B</b> pose les questions → <b>A</b> répond':'<b>A</b> pose les questions → <b>B</b> répond'}
+function dcUp(f){const c=CH[D.c];if(f)$('#dc').innerHTML='<div id="dv">'+vs([c[0]],0)+'</div><div id="dp"></div>';$('#dp').innerHTML=`<div class="pc ${D.o?'op':''}" data-a="fl" tabindex="0">${D.o?`<b>${c[1]}</b>Réponds en LSF !`:'👀 Que demande cette personne ? Touche pour vérifier'}</div>`}
+let Z;const sh=a=>a.sort(()=>Math.random()-.5);
+function qzNew(){Z={o:sh(Q.map((_,i)=>i)),k:0,s:0,a:0};qzUp()}
+function qzUp(){const el=$('#qz');if(Z.k>=Q.length){el.innerHTML=`<div class="bravo on">🎉 Score : ${Z.s} / ${Q.length}</div><button class="btn" data-a="qn">↺ Rejouer</button>`;return}const q=Z.o[Z.k],ch=sh([q,...sh(Q.map((_,i)=>i).filter(i=>i!=q)).slice(0,3)]);el.innerHTML=`<p><b>Question ${Z.k+1} / ${Q.length}</b></p>${vs([Q[q][0]],0)}<div class="tiles">${ch.map(i=>`<button class="tile" data-a="qa" data-i="${i}">${Q[i][1]}</button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a=qa],[data-a=qn]');if(!el)return;if(el.dataset.a=='qn')return qzNew();if(Z.a)return;const q=Z.o[Z.k],ok=+el.dataset.i==q;Z.a=1;if(ok)Z.s++;el.classList.add(ok?'ok':'bad');if(!ok)document.querySelector(`[data-a=qa][data-i="${q}"]`).classList.add('ok');setTimeout(()=>{Z.k++;Z.a=0;qzUp()},ok?900:1800)});
+function beep(){try{const a=new AudioContext(),o=a.createOscillator();o.connect(a.destination);o.frequency.value=660;o.start();o.stop(a.currentTime+.5)}catch(e){}}
+function go(i){Object.values(T).forEach(t=>clearInterval(t.iv));T={};D={};cur=Math.max(0,Math.min(ST.length-1,i));location.hash=cur;
+ const s=ST[cur];$('#v').innerHTML=`<h2>${s.h}</h2><p class="sub">${s.s}</p>`+s.b.map(b=>R[b.t](b)).join('');
+ $('#nav').innerHTML=NAMES.map((n,k)=>`<button data-go="${k}" class="${k==cur?'on':''}">${k?k+'. ':''}${n}</button>`).join('');
+ $('#pv').style.visibility=cur?'visible':'hidden';$('#nx').style.visibility=cur<ST.length-1?'visible':'hidden';
+ if($('#sq'))ordUp();if($('#ro'))roUp();if($('#qz'))qzNew();scrollTo(0,0)}
+document.addEventListener('click',e=>{
+ const g=e.target.closest('[data-go]');if(g)return go(+g.dataset.go);
+ const el=e.target.closest('[data-a]');if(!el)return;const a=el.dataset.a;
+ if(a=='rp'){const v=el.closest('figure').querySelector('video');v.currentTime=0;v.play()}
+ if(a=='ha'||a=='hd'){const h=el.closest('.hyp'),id=h.dataset.id;S.hyp[id]=S.hyp[id]||[];
+  if(a=='ha'){const i=h.querySelector('input');if(!i.value.trim())return;S.hyp[id].push(i.value.trim());i.value=''}else S.hyp[id].splice(+el.dataset.i,1);
+  sv();h.querySelector('.chips').innerHTML=chips(id)}
+ if(a=='rv'){const r=el.closest('.rev');r.classList.toggle('on')}
+ if(a=='cd'){const c=el.closest('.card');c.classList.toggle('open');if(!c.classList.contains('open'))c.querySelectorAll('video').forEach(v=>v.pause())}
+ if(a=='tg'||a=='rs'){const b=el.closest('.tim'),id=b.dataset.id,t=T[id]=T[id]||{l:+b.dataset.s,iv:0},bt=b.querySelector('.btn');
+  const up=()=>{b.querySelector('b').textContent=fm(t.l)};
+  if(a=='rs'){clearInterval(t.iv);t.iv=0;t.l=+b.dataset.s;b.classList.remove('end');bt.textContent='▶ Démarrer';up()}
+  else if(t.iv){clearInterval(t.iv);t.iv=0;bt.textContent='▶ Reprendre'}
+  else{if(t.l<=0)return;bt.textContent='⏸ Pause';t.iv=setInterval(()=>{t.l--;up();if(t.l<=0){clearInterval(t.iv);t.iv=0;b.classList.add('end');bt.textContent='Terminé';beep()}},1000)}}
+ if(a=='cr'){Object.keys(S.chk).filter(k=>k.startsWith(el.dataset.id+'.')).forEach(k=>delete S.chk[k]);sv();go(cur)}
+ if(a=='ot'){const i=+el.dataset.i;if(i==O.q.length){O.q.push(i);ordUp()}else{el.classList.add('bad');setTimeout(()=>el.classList.remove('bad'),300)}}
+ if(a=='dr'){let n;do{n=Math.floor(Math.random()*CH.length)}while(n===D.c);D={c:n,o:0};dcUp(1)}
+ if(a=='fl'){D.o=!D.o;dcUp()}
+ if(a=='sw'){rl=1-rl;roUp()}});
+document.addEventListener('change',e=>{const k=e.target.dataset.k;if(!k)return;S.chk[k]=e.target.checked;sv();
+ const b=ST[cur].b.find(x=>x.t=='chk'&&x.id==k.split('.')[0]);if(b&&b.b)$('#bv').classList.toggle('on',all(b))});
+document.addEventListener('keydown',e=>{
+ if(e.key=='Enter'&&e.target.matches('.hyp input'))e.target.nextElementSibling.click();
+ else if(e.key=='Enter'&&e.target.matches('.pc'))e.target.click();
+ else if(!e.target.matches('input,video')&&e.key=='ArrowRight')go(cur+1);
+ else if(!e.target.matches('input,video')&&e.key=='ArrowLeft')go(cur-1)});
+$('#pv').onclick=()=>go(cur-1);$('#nx').onclick=()=>go(cur+1);
+$('#bt').onclick=e=>{const on=document.body.classList.toggle('t');e.target.setAttribute('aria-pressed',on)};
+$('#br').onclick=()=>{if(confirm('Effacer les hypothèses et les cases cochées ?')){S={hyp:{},chk:{}};sv();go(cur)}};
+go(+location.hash.slice(1)||0);
+</script>
+<script src="videos.js" onerror="document.getElementById('v').insertAdjacentHTML('afterbegin','<div class=&quot;note warn&quot;>Fichier videos.js introuvable : déposez-le à côté de index.html.</div>')"></script>
+<noscript>Activez JavaScript pour utiliser cette application.</noscript></body></html>
